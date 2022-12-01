@@ -1,3 +1,8 @@
-import day0 from './00/00';
+const day = process.argv[2];
 
-(async () => await day0())();
+(async () => {
+  const currentDay: () => Promise<void> = (
+    await import(`./${day.padStart(2, '0')}`)
+  ).default;
+  await currentDay();
+})();

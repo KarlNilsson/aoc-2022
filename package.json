@@ -1,0 +1,25 @@
+{
+  "name": "01",
+  "version": "1.0.0",
+  "license": "MIT",
+  "main": "dist/app.js",
+  "scripts": {
+    "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write",
+    "build": "tsc && tsconfig-replace-paths --project tsconfig.json",
+    "start": "tsc && tsconfig-replace-paths --project tsconfig.json && node dist/app.js"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.10",
+    "@typescript-eslint/eslint-plugin": "^5.45.0",
+    "@typescript-eslint/parser": "^5.45.0",
+    "eslint": "^8.28.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
+    "prettier": "^2.8.0",
+    "tsconfig-paths": "^4.1.1",
+    "tsconfig-replace-paths": "^0.0.11",
+    "typescript": "^4.9.3"
+  },
+  "dependencies": {}
+}

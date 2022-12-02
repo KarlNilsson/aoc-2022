@@ -9,16 +9,16 @@ export const calculateRoundScore = ({ p1, p2 }: Round) => {
 };
 
 export const predictRoundScore = ({ p1, p2 }: Round) => {
-  const p2Values = [1, 2, 3];
-  const winner = (p1.charCodeAt(0) - 'A'.charCodeAt(0) + 1) % 3;
-  const tie = p1.charCodeAt(0) - 'A'.charCodeAt(0);
-  const loss = (p1.charCodeAt(0) - 'A'.charCodeAt(0) + 2) % 3;
+  const diff = p1.charCodeAt(0) - 'A'.charCodeAt(0);
+  const tiePoint = diff + 1;
+  const winnerPoint = ((diff + 1) % 3) + 1;
+  const lossPoint = ((diff + 2) % 3) + 1;
 
   if (p2 === 'X') {
-    return p2Values[loss];
+    return lossPoint;
   }
   if (p2 === 'Y') {
-    return p2Values[tie] + 3;
+    return tiePoint + 3;
   }
-  return p2Values[winner] + 6;
+  return winnerPoint + 6;
 };

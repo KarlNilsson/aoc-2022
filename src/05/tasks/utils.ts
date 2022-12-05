@@ -27,12 +27,15 @@ const generateStacks = (stackString: string): Stack[] => {
 };
 
 const generateCommands = (commandsString: string): Command[] => {
-  const rawCommands = commandsString.split('\n').map((row) => row.split(' '));
+  const rawCommands = commandsString
+    .split('\n')
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    .map((row) => row.match(/\d+/g)!.map(Number));
   return rawCommands.map(
     (rawCommand): Command => ({
-      amount: Number.parseInt(rawCommand[1], 10),
-      stackFrom: Number.parseInt(rawCommand[3], 10) - 1,
-      stackTo: Number.parseInt(rawCommand[5], 10) - 1
+      amount: Number(rawCommand[0]),
+      stackFrom: Number(rawCommand[1]) - 1,
+      stackTo: Number(rawCommand[2]) - 1
     })
   );
 };

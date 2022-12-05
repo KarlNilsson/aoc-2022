@@ -8,20 +8,14 @@ export type Command = {
 
 const generateStacks = (stackString: string): Stack[] => {
   const stringStacks = stackString.split('\n');
-  const numStacks = Number.parseInt(
-    stringStacks.splice(-1)[0].slice(-2, -1),
-    10
-  );
+  const numStacks = Number(stringStacks.splice(-1)[0].slice(-2, -1));
   const stacks: Stack[] = Array.from(Array(numStacks)).map(() => []);
-  let currentRow = stringStacks.pop();
-  while (currentRow != null) {
-    for (let i = 0; i < numStacks; i += 1) {
-      const currentChar = currentRow[i * 4 + 1];
-      if (currentChar !== ' ') {
-        stacks[i].push(currentChar);
-      }
-    }
-    currentRow = stringStacks.pop();
+  for (let i = stringStacks.length - 1; i >= 0; i -= 1) {
+    const stackLetters = Array.from(stringStacks[i].matchAll(/[A-Z]/g));
+    stackLetters.forEach((letter) => {
+      if (letter.index != null && letter[0] != null)
+        stacks[(letter.index - 1) / 4].push(letter[0]);
+    });
   }
   return stacks;
 };

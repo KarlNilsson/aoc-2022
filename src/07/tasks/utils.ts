@@ -75,8 +75,14 @@ export const createFileStructure = (data: string): ElfFolder => {
         currentCommand = { cmd: 'ls' };
       } else if (rowContents[1] === 'cd') {
         const arg = rowContents[2];
-        currentCommand = { cmd: 'cd', arg };
-        currentFolder = currentFolder.contents[currentCommand.arg] as ElfFolder;
+        if (arg === '/') {
+          currentFolder = root;
+        } else {
+          currentCommand = { cmd: 'cd', arg };
+          currentFolder = currentFolder.contents[
+            currentCommand.arg
+          ] as ElfFolder;
+        }
       }
     } else if (currentCommand.cmd === 'ls') {
       const entityName = rowContents[1];

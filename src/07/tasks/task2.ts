@@ -5,7 +5,7 @@ const MAX_SPACE = 70_000_000;
 const MIN_UNUSED_SPACE = 30_000_000;
 
 const Task = async () => {
-  const data = await readFile(`${__dirname}/../../../input/07/input2.txt`, {
+  const data = await readFile(`${__dirname}/../../../input/07/input1.txt`, {
     encoding: 'utf8'
   });
   const fileTree = createFileStructure(data);

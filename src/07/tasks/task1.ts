@@ -2,7 +2,7 @@ import { readFile } from 'fs/promises';
 import { createFileStructure, sizeForDirs } from './utils';
 
 const Task = async () => {
-  const data = await readFile(`${__dirname}/../../../input/07/input2.txt`, {
+  const data = await readFile(`${__dirname}/../../../input/07/input1.txt`, {
     encoding: 'utf8'
   });
   const fileTree = createFileStructure(data);

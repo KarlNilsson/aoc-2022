@@ -10,7 +10,11 @@ export type ElfFolder = {
   contents: Record<string, ElfFile | ElfFolder>;
 };
 
-type Command = { cmd: 'ls' } | { cmd: 'cd'; arg: string };
+const root: ElfFolder = {
+  type: 'folder',
+  name: '/',
+  contents: {}
+};
 
 const printFolderLine = (folder: ElfFolder, indentation: number) => {
   console.log(`${Array(indentation).join(' ')}- ${folder.name} (dir)`);
@@ -58,51 +62,50 @@ export const sizeForDirs = (folder: ElfFolder) => {
   return dirList;
 };
 
+const listFolder = (currentFolder: ElfFolder, entries: string[]) => {
+  const { contents } = currentFolder;
+  for (let i = 0; i < entries.length; i += 1) {
+    const [meta, name] = entries[i].split(' ');
+    if (meta === 'dir') {
+      if (contents[name] == null) {
+        contents[name] = {
+          type: 'folder',
+          name,
+          contents: { '..': currentFolder }
+        };
+      }
+    } else {
+      const file: ElfFile = {
+        type: 'file',
+        size: Number(meta),
+        name
+      };
+      if (contents[file.name] == null) {
+        contents[file.name] = file;
+      }
+    }
+  }
+};
+
+const changeDir = (currentFolder: ElfFolder, target: string) => {
+  return currentFolder.contents[target] as ElfFolder;
+};
+
 export const createFileStructure = (data: string): ElfFolder => {
-  const output = data.split('\n');
-  const root: ElfFolder = {
-    type: 'folder',
-    name: '/',
-    contents: {}
-  };
+  const command = data.split('$ ');
   root.contents['..'] = root;
   let currentFolder = root;
-  let currentCommand: Command = { cmd: 'cd', arg: '/' };
-  for (let i = 1; i < output.length; i += 1) {
-    const rowContents = output[i].split(' ');
-    if (rowContents[0] === '$') {
-      if (rowContents[1] === 'ls') {
-        currentCommand = { cmd: 'ls' };
-      } else if (rowContents[1] === 'cd') {
-        const arg = rowContents[2];
-        if (arg === '/') {
-          currentFolder = root;
-        } else {
-          currentCommand = { cmd: 'cd', arg };
-          currentFolder = currentFolder.contents[
-            currentCommand.arg
-          ] as ElfFolder;
-        }
-      }
-    } else if (currentCommand.cmd === 'ls') {
-      const entityName = rowContents[1];
-      if (rowContents[0] === 'dir') {
-        if (currentFolder.contents[entityName] == null) {
-          currentFolder.contents[entityName] = {
-            type: 'folder',
-            name: entityName,
-            contents: { '..': currentFolder }
-          };
-        }
+  for (let i = 0; i < command.length; i += 1) {
+    const [cmd, ...output] = command[i].split('\n');
+    const [...args] = cmd.split(' ');
+    if (args[0] === 'ls') {
+      const entityList = output.filter(Boolean);
+      listFolder(currentFolder, entityList);
+    } else if (args[0] === 'cd') {
+      if (args[1] === '/') {
+        currentFolder = root;
       } else {
-        const file: ElfFile = {
-          type: 'file',
-          size: Number(rowContents[0]),
-          name: rowContents[1]
-        };
-        if (currentFolder.contents[file.name] == null) {
-          currentFolder.contents[file.name] = file;
-        }
+        currentFolder = changeDir(currentFolder, args[1]);
       }
     }
   }

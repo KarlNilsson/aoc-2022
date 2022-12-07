@@ -54,6 +54,7 @@ export const sizeForDirs = (folder: ElfFolder) => {
   let dirList: Array<{ folderName: string; size: number }> = [
     { folderName: folder.name, size: getDirectorySize(folder) }
   ];
+
   Object.entries(folder.contents).forEach(([name, value]) => {
     if (value.type === 'folder' && name !== '..') {
       dirList = dirList.concat(sizeForDirs(value));
@@ -66,6 +67,7 @@ const listFolder = (currentFolder: ElfFolder, entries: string[]) => {
   const { contents } = currentFolder;
   for (let i = 0; i < entries.length; i += 1) {
     const [meta, name] = entries[i].split(' ');
+
     if (meta === 'dir') {
       if (contents[name] == null) {
         contents[name] = {
@@ -95,9 +97,11 @@ export const createFileStructure = (data: string): ElfFolder => {
   const command = data.split('$ ');
   root.contents['..'] = root;
   let currentFolder = root;
+
   for (let i = 0; i < command.length; i += 1) {
     const [cmd, ...output] = command[i].split('\n');
     const [...args] = cmd.split(' ');
+
     if (args[0] === 'ls') {
       const entityList = output.filter(Boolean);
       listFolder(currentFolder, entityList);
